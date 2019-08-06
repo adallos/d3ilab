@@ -13,6 +13,20 @@ var svg = d3.select("#my_dataviz")
 // create dummy data -> just one element per circle
 d3.json("data.json", function(data) {
 
+    let objSkills = ''
+    let myObj = ''
+    let fullSkillset = ''
+    Object.keys(data).map((item, value) => {
+
+        let skills = pickSkills(data[item])
+        fullSkillset += skills + ',';
+
+    })
+    console.log(fullSkillset.substring(0, fullSkillset.length - 1).split(','));
+    //console.log(fullSkillset);
+
+
+
     // Initialize the circle: all located at the center of the svg area
     var node = svg.append("g")
         .selectAll("circle")
@@ -26,7 +40,6 @@ d3.json("data.json", function(data) {
         .style("fill-opacity", 0.3)
         .attr("stroke", "#69a2b2")
         .style("stroke-width", 4)
-    console.log(data);
 
     // Features of the forces applied to the nodes:
     var simulation = d3.forceSimulation()
@@ -57,3 +70,7 @@ d3.json("data.json", function(data) {
         console.log(searchCriteria);
     })
 })
+
+function pickSkills({ skills }) {
+    return skills
+}
