@@ -1,0 +1,80 @@
+[{
+        "ninja": "Natalia",
+        "skills": "Javascript",
+        "discipline": "Development",
+        "domain": "Front End",
+        "grade": "JT",
+        "englishLevel": "A1",
+        "project": "Bench"
+
+    },
+    {
+        "ninja": "Andrea",
+        "skills": "AJAX",
+        "discipline": "Development",
+        "domain": "Back End",
+        "grade": "TL",
+        "englishLevel": "A2",
+        "project": "BuzzPoints"
+
+    },
+    {
+        "ninja": "Inés",
+        "skills": "Javascript",
+        "discipline": "Development",
+        "domain": "Front End",
+        "grade": "EN",
+        "englishLevel": "A2",
+        "project": "Bain"
+
+    },
+    {
+        "ninja": "Sebastián",
+        "skills": "HTML5",
+        "discipline": "Development",
+        "domain": "Back End",
+        "grade": "SE",
+        "englishLevel": "A2",
+        "project": "McClatchy"
+
+    },
+    {
+        "ninja": "David",
+        "skills": "Python",
+        "discipline": "Development",
+        "domain": "Data",
+        "grade": "CL",
+        "englishLevel": "A2",
+        "project": "McClatchy"
+
+    },
+    {
+        "ninja": "Luis",
+        "skills": "Python",
+        "discipline": "Development",
+        "domain": "Mobile",
+        "grade": "JT",
+        "englishLevel": "B1",
+        "project": "McClatchy"
+
+    },
+    {
+        "ninja": "Hollman",
+        "skills": "Python",
+        "discipline": "Development",
+        "domain": "Back End",
+        "grade": "TL",
+        "englishLevel": "B2",
+        "project": "Bain"
+
+    },
+    {
+        "ninja": "Javier",
+        "skills": "AJAX",
+        "discipline": "Development",
+        "domain": "Data",
+        "grade": "EN",
+        "englishLevel": "C1",
+        "project": "Buzzpoints"
+    }
+]
