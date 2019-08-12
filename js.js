@@ -1,76 +1,117 @@
-// set the dimensions and margins of the graph
-var width = 450
-var height = 450
-let searchCriteria = []
+let obj = []
 
-
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
+let svg = d3.select("#my_dataviz")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", 450)
+    .attr("height", 450)
+    /*.call(d3.zoom().on("zoom", function () {
+        svg.attr("transform", d3.event.transform)
+    }))*/
 
-// create dummy data -> just one element per circle
-d3.json("data.json", function(data) {
-
-    let objSkills = ''
-    let myObj = ''
-    let fullSkillset = ''
-    Object.keys(data).map((item, value) => {
-
-        let skills = pickSkills(data[item])
-        fullSkillset += skills + ',';
-
+function skillFirstPush(skill) {
+    let localComparer = []
+    Object.values(obj).forEach(x => {
+        pushToComparerArray(Object.keys(x)[0], skill, localComparer)
     })
-    console.log(fullSkillset.substring(0, fullSkillset.length - 1).split(','));
-    //console.log(fullSkillset);
+    if (localComparer.includes(false)) {
+        return false
+    }
+    else{
+        return true
+    }
+}
 
+function pushToComparerArray(key, skill, localComparer) {
+    if (key == skill) {
+        localComparer.push(false)
+    }
+    else{
+        localComparer.push(true)
+    }
+}
 
+let skillToPush = {}
+d3.json("data.json", function(data) {
+    data.map(ninjaInfo => {
+        ninjaInfo.skills.map(skillInfo => {
+            if (obj.length == 0 || skillFirstPush(skillInfo.skill)) {
+                skillToPush = {
+                    [skillInfo.skill]: 1
+                }
+                obj.push(skillToPush)
+            } else {                
+                obj.forEach(item => {
+                    if (skillInfo.skill == Object.keys(item)[0]) {
+                        item[skillInfo.skill] += 1
+                    }
+                })
+            }
+        })
+    })
 
-    // Initialize the circle: all located at the center of the svg area
-    var node = svg.append("g")
-        .selectAll("circle")
-        .data(data)
-        .enter()
+    let node = svg
+        .append("g")
+        .attr("class", "outer-container")
+        .selectAll(".outer-container")
+        .data(obj)
+        .enter();
+
+    let group = node.append("g")
+        .attr("class", "group-container");
+
+    group
         .append("circle")
-        .attr("r", 25)
-        .attr("cx", width / 2)
-        .attr("cy", height / 2)
+        .attr("r", 30)
+        .attr("cx", 450 / 2)
+        .attr("cy", 450 / 2)
         .style("fill", "#69b3a2")
-        .style("fill-opacity", 0.3)
-        .attr("stroke", "#69a2b2")
-        .style("stroke-width", 4)
+        .style("fill-opacity", 0.3);
 
-    // Features of the forces applied to the nodes:
-    var simulation = d3.forceSimulation()
-        .force("center", d3.forceCenter().x(width / 2).y(height / 2)) // Attraction to the center of the svg area
-        .force("charge", d3.forceManyBody().strength(0.5)) // Nodes are attracted one each other of value is > 0
-        .force("collide", d3.forceCollide().strength(.01).radius(30).iterations(1)) // Force that avoids circle overlapping
+    group
+        .append("text")
+        .attr("text-anchor", "middle")
+        .text(function (d) {
+            return Object.keys(d)[0]
+        })
+        .style("user-select", "none")
+        .style("pointer-events", "none")
+        .style("font-family", "Helvetica")
 
-    // Apply these forces to the nodes and update their positions.
-    // Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.
-
+    let simulation = d3.forceSimulation()
+        .force("charge", d3.forceManyBody().strength(10))
+        .force("center", d3.forceCenter().x(450 / 2).y(450 / 2)) 
+        .force("collision", d3.forceCollide().radius(function (d) {
+            return Object.values(d)[0] * 15 + 10
+        }
+        ).iterations(1)) 
 
     simulation
-        .nodes(data)
+        .nodes(obj)
         .on("tick", function(d) {
-            node
+            group
+                .selectAll("circle")
                 .attr("cx", function(d) { return d.x; })
                 .attr("cy", function(d) { return d.y; })
+                .attr("r", function (d) {
+                    return Object.values(d)[0]*15
+                })
+
+            group
+                .selectAll("text")
+                .attr("x", function(d) { return d.x ; })
+                .attr("y", function(d) { return d.y + 5; })
         });
 
+    let searchCriteria = []
     d3.selectAll("circle").on("click", function(e) {
         if (this.style.fill == "red") {
             d3.select(this).style("fill", "#69b3a2")
-            searchCriteria = searchCriteria.filter(criteria => criteria != e.ninja)
+            searchCriteria = searchCriteria.filter(criteria => criteria != Object.keys(e)[0])
         } else {
             d3.select(this).style("fill", "red")
-            searchCriteria.push(e.ninja)
+            searchCriteria.push(Object.keys(e)[0])
         }
         console.log(searchCriteria);
+        
     })
 })
-
-function pickSkills({ skills }) {
-    return skills
-}

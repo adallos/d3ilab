@@ -1,0 +1,86 @@
+<!-- <!DOCTYPE html> -->
+<meta charset="utf-8">
+<head>
+  <title>Force layout (with collision detection)</title>
+</head>
+
+<style>
+circle {
+  fill: orange;
+}
+</style>
+
+<body>
+  <div id="content">
+    <svg width="400" height="400">
+    </svg>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+
+  <script>
+var width = 400, height = 400
+
+let mock = [
+  {"js" : 3},
+  {"ajax": 6},
+  {"html5":5},
+  {"py": 4},
+  {"react": 4},
+  {"blah": 4},
+  {"blah": 8}
+]
+var numNodes = mock.length
+let skillsObj = {}
+var nodes = d3.range(numNodes).map(function(d) {
+  skillsObj = {...skillsObj, ...mock[d]}
+  if(mock[d]){
+    return {radius: Object.values(mock[d])[0]*8}
+  }
+
+  return {radius: d*10}
+})
+
+console.log(skillsObj);
+
+var simulation = d3.forceSimulation(nodes)
+  .force('charge', d3.forceManyBody().strength(10))
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .force('collision', d3.forceCollide().radius(function(d) {
+    return d.radius+5
+  }).iterations(1))
+  .on('tick', ticked);
+
+function ticked() {
+  var u = d3.select('svg')
+    .selectAll('circle')
+    .data(nodes)
+
+  u.enter()
+    .append('circle')
+    .attr('r', function(d) {
+      return d.radius
+    })
+    .append('text')
+      .text('this is the text')
+      .attr('cx', function(d) {
+      return d.x
+    })
+    .attr('cy', function(d) {
+      return d.y
+    })
+
+    .merge(u)
+    .attr('cx', function(d) {
+      return d.x
+    })
+    .attr('cy', function(d) {
+      return d.y
+    })
+    
+
+  u.exit().remove()
+}
+  </script>
+</body>
+</html>
